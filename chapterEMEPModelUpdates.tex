@@ -1,0 +1,550 @@
+\chapter[Model updates]{OLD-OLD-OLD Updates to the EMEP MSC-W model, 2018-2019}
+\label{ch:ModelUpdates}
+
+%% authors? added all names seen in Log.changes
+
+{\bf{David Simpson, Robert Bergstr\"om, Svetlana Tsyro and Peter Wind}}
+\vspace{30pt}
+
+This chapter summarises the changes made to the EMEP MSC-W  model
+since \citet{R2018:ModDev}, and along with changes discussed in
+\citet{R2013:ModDev,R2014:ModDev,R2015:ModDev,R2016:ModDev,R2017:ModDev}, updates
+the standard description given in \citet{Simpson_et_al:EMEP}. The
+model version used for reporting this year is denoted
+rv4.33, which has some significant changes since the
+rv4.17a documented last year.
+Table~\ref{tab:Updates} summarises the changes made in the EMEP
+model since the version documented in \citet{Simpson_et_al:EMEP}.
+
+%Versions:
+%
+%  rv4.33 used  for R2019
+%  rv4.33 - open source June 2019
+%  rv4.32 used for EMEP course, April 2019
+%  rv4.17a used for R2018 runs  (July-ish?)
+%  rv4.17 released 26/2/2018
+%  rv4.16 interim 21/12/2017 - used for N2O5 paper, wheat calculations
+%  rv4.15 released 8/9/2017
+
+\section{Overview of changes} 
+
+\begin{itemize}
+
+\item
+EmChem19 -- a new gas-phase chemical mechanism has been
+introduced (Bergstr{\"o}m et al., 2019), updating the EmChem16x scheme used previously. See
+Sect.~\ref{sec:EmChem19}.
+
+\item
+CRI v2.2a-emep -- the Common Reactive Intermediates (CRI) mechanism \citep{Jenkin2008}
+used
+in research versions of the EMEP model has been updated and a new isoprene scheme for the
+CRI scheme has been implemented in the model \citep{JenkinCRI2019,McFiggans:2019}.
+
+\item
+The carbon-bond scheme used in research versions of the EMEP model has been updated from
+CB05 \citep{Yarwood_et_al:2005} to CB6r2
+\citep[]{LueckenAE2019}.
+
+\item
+Two new schemes for handling secondary organic aerosol (SOA) have been
+added to the model -- a new volatility basis set (VBS) scheme from
+\citet{Hodzic2016}, that takes into account recent findings regarding
+high formation rates for SOA, and an alternative ``1.5-dimensional''
+volatility basis set (VBS) scheme, based on \citet{Koo2014}, which
+handles both oxygenation and fragmentation of primary and secondary OA
+by atmospheric oxidation (chemical aging), in a simplified way.
+
+\item
+The EMEP 3D model and chemical pre-processing systems (GenChem)
+were re-harmonised, making use of a new python-based system. See
+Sect.~\ref{sec:GChem}.
+
+\item
+We have added `EQSAM4clim' as an option for aerosol thermodynamics. See
+Sect.~\ref{sec:EQSAM}.
+
+\item
+A bug-fix for radiation (PAR) was also needed, with significant impact
+on POD calculations for forests. See Sect.~\ref{sec:PAR}.
+
+\item
+New methods to specify emissions inputs were added, which allow more
+flexible input of data from external sources. See Sect.~\ref{sec:EmisInp}.
+
+\item
+The vertical profiles of emission releases were modified, reflecting
+the transition to a finer resolution of the modelling grid and as a
+part of the general model development towards a flexible code
+
+\item
+The use of configuration files was again expanded, replacing some
+of the earlier hard-coded methods to specify model setups. See
+Sect.~\ref{sec:Config}.
+
+
+\end{itemize}
+
+
+
+\section{EmChem19 chemical mechanism}
+\label{sec:EmChem19}
+
+The new gas-phase chemistry scheme -- EmChem19 -- is a substantial
+revision of the EmChem16 scheme \citep{R2017:ModDev}.  The reaction rates
+in EmChem19 are updated to be consistent with the latest recommendations
+from the IUPAC \citep{IUPAC2019,Atkinson2004,Atkinson2006}, and evaluated against
+the latest Master Chemical Mechanism (MCM v3.3.1, 
+\citealt[][and refs therein]{Jenkin2015}). In addition to
+these updates (and bug fixes) some new gas-phase reactions have been
+added and a few new chemical species have been included in the chemical
+mechanism.  Major changes compared to EmChem16 include:
+
+\begin{itemize}
+\item
+The addition of benzene and toluene as emitted species. 
+\item
+A revised (very simplified) aromatic chemistry -- tuned to give
+reasonably good agreement with the Master Chemical Mechanism 
+\citep[MCM, see][]{Jenkin2015} in box model simulations.
+
+\item
+Addition of more than 20 new reactions -- including a number of reactions
+between peroxy and nitrate radicals and a new treatment of peroxy -
+peroxy radical reactions, using the total  \ce{RO2} pool as a reactant.
+
+\item
+Changes of the rates and/or products of ca 45 reactions.
+
+\item
+Revised SOA formation from sesquiterpenes (SQT) -- in EmChem19 SQT
+emissions are assumed to be equal to 5\% (by mass) of the monoterpene
+emissions; in the model the emitted SQT is assumed to immediately form
+non-volatile BSOA, with 17\% yield (mass based).
+
+\item
+A few reactions were removed or simplified compared to EmChem16 -- this
+includes a simplification of the minimal scheme for monoterpene chemistry
+(based on \citealp{LamarqueCAMchem2012}), which was introduced in EmChem16;
+in the standard EmChem19 scheme monoterpenes are modelled using a single
+surrogate MT (APINENE) instead of the three used in EmChem16.
+
+\end{itemize}
+ 
+A detailed description of the EmChem19 scheme, including evaluation
+against ambient measurements and comparison to the MCM and other
+chemical mechanisms in box model simulations, will be given by
+Bergstr{\"o}m et al., 2019.
+
+\nocite{BergstromEmChem2019}
+
+
+%For own info.
+%Notes 20 Aug 2018
+%    The SQT_SOA_NV yield in the “Nature-paper” runs seem very high? And the molecular formula for SQT_SOA_NV seems strange -- C15H22!? Gives a very low OM/OC ratio (and SQT actually is C15H24) -- using the direct emission of SQT_SOA_NV of 0.01534*MT means that the SQT-emissions (if we assume 17% mass yield from SQT) are assumed to be about 0.1338*MT emissions (and not 5%, which we have assumed earlier)
+%    I will change to my old molecular formula for SQT_SOA_NV (SESQ_ng100) C14H22O7, with stated M of 302. And set the “direct” emission to 0.00383*MT to correspond to 5% SQT emissions (mass based) and 17% SOA-yield (mass based) 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Revised GenChem system}
+\label{sec:GChem}.
+
+The chemical mechanism files used in the EMEP CTM have for many years
+been generated with a chemical pre-processor. Originally written in
+perl, GenChem.pl, and now in python, GenChem.py, this pre-processor reads
+files which describe the chemical mechanism using chemical notation (e.g.
+krate   OH + NO2 = HNO3), and produces differential equations in fortran,
+ready for import into the EMEP source code as the CM\_ files (e.g.
+CM\_ChemSpecs\_mod.f90). GenChem.pl used
+to be a part of the emepctm package as used at MSC-W, but now GenChem.py
+is part of a separate system which allows testing of chemical mechanisms
+with either a box-model (BoxChem) or the 1-D Ecosystem Surface
+Exchange model (ESX, \citealt{R2014:ESX}). With this system the
+EMEP model chemistry can be evaluated against more advanced and
+well-evaluated schemes such as the Master Chemical Mechanism (MCM, e.g.
+\citealt{Jenkin2015,Saunders2003a}, CRI \citep{JenkinCRI2019} % add more
+ or carbon-bond \citep[]{Yarwood_et_al:2005,LueckenAE2019}. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{EQSAM4clim}
+\label{sec:EQSAM}
+
+Three thermodynamic equilibrium models are currently implemented in
+the EMEP MSC-W model to calculate gas/aerosol partitioning of
+inorganic semi-volatile species. The alternative models are:
+Ammonium (EMEP simplified equilibrium scheme, \citealt{Hov:NOx}), MARS
+\citep{BinkowskiShankar:1995}, and EQSAM \citep{Metzger2007}. The
+MARS scheme, presently used in the standard model, has some
+limitations, the major one being the number of chemical species
+included in the thermodynamic equlibrium, but also the assumption of
+metastable aqueous aerosols. This year, a new version of EQSAM -
+EQSAM4clim \citep{Metzger:2016} - has been implemented as an
+optional thermodynamic scheme. The advantage of the scheme is that it
+considers a full gas-liquid-solid partitioning and can account
+for more cations (e.g. Na$^{+}$, Ca$^{2+}$, Mg$^{2+}$) and anions
+(Cl$^{-}$). Preliminary testing of EQSAM4clim has been carried out,
+and the results are presented in Chapter~\ref{ch:eqsam4clim}. Further
+evaluation of the scheme with more observations, as well as its
+testing in source-receptor calculations are needed before the
+EQSAM4clim can be considered for use in EMEP MSC-W reporting runs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Radiation issues}
+\label{sec:PAR}
+
+% LandInputs_Apri2017 has light
+% IAM_DF  0.006
+% IAM_CR  0.0105
+% and e.g. f ~  1.0 - exp(-0.006*300)  =  0.8347
+% but           1.0 - exp(-0.0105*300) =  0.9571
+
+As noted in \citet{R2018:ModDev}, the radiation scheme of
+\citet{WeissNorman1985} was introduced in order to give better estimates
+of diffuse versus direct photosynthetically active radiation (PAR), and to fix a
+bug in the calculations of these variables which had been identified in
+previous model versions.  PAR is used in modelling both stomatal uptake and
+biogenic VOC emissions.  Unfortunately this bug-fix contained itself a
+bug in the units used in the stomatal uptake (DO3SE) module, so that calculated PAR levels were too low. This
+has now been corrected.  As found and explained in  \citet{R2018:ModDev},
+and illustrated in  Fig.~\ref{fig:PODbug}, the impact
+of the change is mainly apparent for forests.
+The net result of fixing this bug is to restore POD levels to very
+similar levels to those seen in the rv4.15 version discussed in \citet{R2018:ModDev}.
+As before, the correlation coefficient between new and old versions is very high ($\ge$0.996).
+
+\begin{figure}
+%\includegraphics*[width=8cm]{FIGS_UPDATES/PlotScat_SURF_ppb_O3.png}
+%\includegraphics*[width=8cm]{FIGS_UPDATES/PlotScat_POD1_IAM_DF.png}
+%\includegraphics*[width=8cm]{FIGS_UPDATES/PlotScat_POD3_IAM_CR.png}
+\caption{Comparison of model versions rv4.33 and rv4.32
+ for mean ozone (top-left), POD1 for IAM deciduous forests (top-right) and
+ POD$_3$IAM for crops (bottom). The dashed line represents the 1:1 line.
+ Calculations are for the year 2012, using the 50km version of the model.
+  \label{fig:PODbug}}
+\end{figure}
+
+
+
+%\QUERY{
+%FROM R2018: 
+% ..... Although this change has very limited
+% impact on most results and pollutants, calculations of photo-toxic ozone
+% dose (POD) were found to be rather large in some case, especially for
+% forests. This is illustrated in  Fig.~\ref{fig:PODbug}, which compares
+% results from two model runs using identical emissions and meteorology,
+% but  versions rv4.15 and rv4.17. It can be seen that ozone itself is
+% hardly affected by this change, but POD1 values for deciduous forests
+% are about 30\% lower with
+%rv4.17 than with rv4.15.  In both cases the two
+%model versions correlate extremely well.
+%WILL CONTINUE 19th August
+%}
+
+%At first sight, the lack of sensitivity of POD$_3$IAM to this problem seem surprising
+%because higher thresholds ($Y$ in POD$Y$) tend to lead to greater sensitivity \citep{Tuovinen:EP2007}.
+%However, the light response coefficients used in the calculation of stomatal conductance (\gsto)
+%are quite different for crops and forests, such that \gsto for forests is  more likely to
+%be  limited by low PAR values than crops. Further, the accumulation season for POD$_3$IAM in
+%crops is shorter (90 days for IAM\_CR)
+%and confined to the summer period when light levels are not limiting, whereas 
+%the accumulation season for POD1 extends into the spring and autumn and thus
+%includes more periods when light-levels act to limit \gsto.
+%The impacts of this change will be investigated in more detail in the coming months.
+
+%Fortunately, given that calculations of POD$_3$IAM have been more extensively
+%used  than POD1 for  impact assessment \citep{MillsGCB2018a,MillsGCB2018b},
+% as of these
+
+
+%\begin{figure}
+%\includegraphics*[width=8cm]{FIG_UPDATES/PlotScat_SURF_ppb_O3.png}
+%\includegraphics*[width=8cm]{FIG_UPDATES/PlotScat_POD1_IAM_DF.png}
+%\includegraphics*[width=8cm]{FIG_UPDATES/PlotScat_POD3_IAM_CR.png}
+%\caption{Comparison of model versions rv4.15 and rv4.17
+% for mean ozone (top-left), POD1 for IAM deciduous forests (top-right) and
+% POD$_3$IAM for crops (bottom). The dashed line represents the 1:1 line.
+% Calculations are for the year 2012, using the 50km version of the model.
+%  \label{fig:PODbug}}
+%\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Emission inputs}
+\label{sec:EmisInp}
+
+A new system for reading emissions has been implemented. The new system allows
+to read emissions in NetCDF, without the need of heavy preprocessing of these inputs.
+Any 2-dimensional emission field can be directly used by the model, provided
+the longitude and latitude data is provided. The metadata, such as species, units,
+names, sectors, etc. can be provided separately in the configuration file,
+if they are not found in the emission file.
+The new system is at present implemented in addition to the previous one, and
+emissions in both formats can be used at the same time.
+
+An emission mask can be defined using any field in a NetCDF file. This mask can then
+be used to reduce emission over the region covered by the mask.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Emission heights}
+\label{sec:EmisHeight}
+
+As documented in ~\citet{R2016}, the release heights of GNFR sectoral
+emissions are assigned based on those previously developed for the SNAP
+system. The heights of emission release are now expressed in
+pressure levels, as documented in Table ~\ref{tab:emisH}. Here, the
+P-levels indicate air pressure at the top of the layer, within which
+the given fraction of emissions is released. The lowest layer (second
+column) is confined between 101325.0 Pa (the surface) and 101084.9 Pa
+(appr. 20m), etc. The vertical profiles of emission releases have been
+slightly modified, using the experiences of EMEP
+~\citep{Simpson_et_al:EMEP} and EuroDelta ~\citep{ED3:2014}.
+
+
+
+\begin{table}[!h]
+\begin{center}
+\begin{footnotesize}
+%\footnotesize    
+%DS \begin{tabular}{|l|l|l|l|l|l|l|l|}
+\caption{Definition used for the fractions of emissions, released within a given vertical
+  layer, defined by pressure (P) levels. The P-levels are pressure (Pa) at
+  the top of corresponding layer (P Surface = 101325.0 Pa). The
+  approximate heights ($\Delta$Z, m) of the layer boundaries are also
+  included.
+\label{tab:emisH}
+}
+\begin{tabular}{llllllll}
+\hline 
+P-level &101084.9 &100229.1 &99133.2 &97489.35 &95206.225 &92283.825 &88722.15 \\
+\hline
+$\Delta$Z (m)& 0 - 20 & 20 - 92 & 92 - 184 & 184 - 324 & 324 - 522 & 522-781 & 781-1106\\
+\hline
+ GNFR 1  &0.0 &0.00  &0.0025 &0.1475 &0.40 &0.30 &0.15 \\
+ GNFR 2  &0.06 &0.16 &0.75  &0.03  &0.00  &0.00  &0.0  \\
+ GNFR 3  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 4  &0.05 &0.15 &0.70  &0.10  &0.00  &0.00  &0.0  \\
+ GNFR 5  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 6  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 7  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 8  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 9  &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 10 &0.0 &0.00  &0.41  &0.57  &0.02  &0.00  &0.0  \\
+ GNFR 11 &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 12 &1.0 &0.00  &0.00  &0.00  &0.00  &0.00  &0.0  \\
+ GNFR 13 &0.02 &0.08 &0.60  &0.30  &0.00  &0.00  &0.0  \\
+ \hline 
+\end{tabular}
+%\vspace{0.05in}
+\end{footnotesize}
+\end{center}
+\end{table}
+
+
+
+\begin{table}[!hb]
+\begin{center}
+\caption{The fractions of emissions, released within the actual model
+  layers, for which the approximate heights ($\Delta$Z, m) of their
+  boundaries are also shown.
+\label{tab:ModelEmisH}}
+\begin{footnotesize}
+%\footnotesize    
+%DS \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\begin{tabular}{lllllllll}
+\hline
+$\Delta$Z (m)& 0 - 50 & 50 - 94 & 94 - 155 & 155 - 237 & 237 - 341 & 341 - 623 & 623 - 1015& 1015 -1522\\
+\hline
+GNFR 1 & 0.000 &0.000 &0.002 &0.056 &0.125 &0.485 &0.290 &0.042\\
+GNFR 2 &0.127  &0.111 &0.498 &0.245 &0.019 &0.000 &0.000 &0.000\\
+GNFR 3& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 4& 0.113  &0.104 &0.465 &0.256 &0.062 &0.000 &0.000 &0.000\\
+GNFR 5& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 6& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 7& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 8& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 9& 1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 10& 0.000 &0.010 &0.272 &0.342 &0.357 &0.018 &0.000 &0.000\\
+GNFR 11&1.000  &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 \\
+GNFR 12& 1.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000 &0.000\\
+GNFR 13& 0.054 &0.061 &0.398 &0.300 &0.187 &0.000 &0.000 &0.000\\
+\hline 
+\end{tabular}
+%\vspace{0.05in}
+\end{footnotesize}
+\end{center}
+\end{table}
+
+These emission vertical profiles are defined independently of
+the model's actual vertical layers. 
+Thus, the emissions layers do
+not necesserily match model layers, and the emissions are then
+redistributed into actual model layers.  For the model levels used in
+the runs for this report, the final emission release vertical profiles
+are shown in Table ~\ref{tab:ModelEmisH}. Note that compared to
+earlier runs, the thickness of the lowest layer is now decreased from
+92~m to about 50~m.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Configuration}
+\label{sec:Config}
+
+The configuration parameters of the model run is entirely steered through a fortran namelist.
+The file can easily be edited, to provide alternative parameters and paths to the input data.
+Some key changes are:
+
+\begin{itemize}
+
+\item
+  Many small changes to make model configuration easier and more flexible; see the
+  User Guide for further explanation of some new methods and possibilities. 
+
+\item
+  The `femis' file used to control emission changes per country and  sector was
+developed further, and can now use country  codes (e.g. `SE') rather than 
+numbers (e.g. 18) to specify the source to be modified.
+
+\item
+  The configuration file is now organized in one large namelist instead of several ones.
+  This will reduce the chances for syntactic errors.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nesting}
+
+A full snapshot of the model concentrations can be saved at specific given dates,
+in addition to the standard modes for periodically saving boundary conditions.
+Typically those can be used to be used as initial conditions for a new run in
+a finer grid.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Biomass burning emissions}
+
+It is easy now to switch between different schemes for forest fires emissions
+by simply specifying the source in the configuration file (FINN, GFAS or GFED).
+No need to recompile the code.  The vertical distribution of those emission takes into account the layer thickness.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{WRF}
+
+When WRF meteorological input is used, the model height of the surface is
+read from the parameter `HGT', instead of an ad hoc separate file (topography.nc).
+
+The model will now treat correctly the singularity at the Poles in the `lon lat' projection.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Outputs}
+
+The time stamp of the NetCDF output is now defined in the middle of the period,
+instead of the end. 
+
+%\section{Acknowledgments}
+%
+%Any needed this year?
+%
+%Thanks are due to Ferd Sauter and Roy Wichink Kruit from RIVM for first pointing out
+%problems with the radiation formulation, to John Johansson (Chalmers) for
+%spotting problems with snow fields in WRF, and to Massimo Vieno (CEH, Edinburgh)
+%for pointing out various landcover and other issues with the model.  % = lon/lat 23/11/2017)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}
+\begin{footnotesize}
+\caption{Summary of major EMEP MSC-W model versions from 2012--2017.
+Extends Table S1 of \citealt{Simpson_et_al:EMEP}}
+\label{tab:Updates}
+\centering
+\begin{tabular}{lp{11cm}l}
+\hline
+Version & Update                                        & Ref$^{(a)}$   \\
+\hline
+rv4.33  & Public domain (June 2019)           & This report      \\
+        & EmChem19, PAR bug-fix, EQSAM4clim   &                  \\
+rv4.32  & Used for EMEP course, April 2019    &    \\
+rv4.30  & Moved to new GenChem-based system  &   \\
+        &                                    &        \\
+rv4.17a & Used for R2018. Small updates         & R2018      \\
+rv4.17  & Public domain (Feb. 2018)                   & R2018 \\
+        & Corrections in global land-cover/deserts; added
+          'LOTOS' option for European \ce{NH3} emissions; corrections
+          to snow cover  & R2018 \\
+        & \\
+rv4.16  & New radiation scheme (Weiss\&Norman); Added dry and wet deposition for \ce{N2O5};
+         (Used for  \citealt{Stadtler2018,MillsGCB2018b}) & R2018   \\
+        & \\
+rv4.15  & EmChem16 scheme & R2017 \\
+%    Sect.\ref{sec:GNFR}--\ref{ss:Splits} & R2016  \\
+%
+        & \\
+rv4.14  & Updated chemical scheme & R2017       \\
+%% rv4.13 + CRI was used in McFiggans. Difficult to describe combo
+        & \\
+rv4.12  & New  global land-cover and BVOC & R2017       \\
+        & \\
+rv4.10  &  Public domain (Oct. 2016)                 
+         (Used for  \citealt{MillsGCB2018a}) &  R2016 \\
+        & \\
+rv4.9   & Updates for GNFR sectors, DMS, sea-salt, dust, \ce{S_A} and  $\gamma$, \ce{N2O5} & \\ 
+        &                                                &\\
+rv4.8   &  Public domain (Oct. 2015)                   & R2015\\
+        & ShipNOx introduced.                          
+         Used for EMEP HTAP2 model calculations, see
+see acp special issue: \url{https://www.atmos-chem-phys.net/special_issue390.html}). Also for \citet{Jonson_et_al:2017}. \\
+        &                                                &\\
+rv4.7   & Used for reporting, summer 2015                % & R2015  \\
+        : New calculations of aerosol surface area; 
+        ; New gas-aerosol uptake and \ce{N2O5} hydrolysis rates %CONT & \\
+%         (Used  $\gamma=0.002$, \ce{N2O5} hydrolysis, for reporting.)   &\\
+        ; Added 3-D calculations pf aerosol extinction and AODs; %& \\
+        ; Emissions - new flexible mechanisms for interpolation and merging sources %& \\
+        ; Global - monthly emissions from ECLIPSE project % & \\
+        ; Global -  LAI changes from LPJ-GUESS model % & \\
+        ; WRF meteorology \citep{SkamarockKlemp2008} can now
+     be used directly in EMEP model. & R2015 \\
+        &                                                &\\
+rv4.6   & Used for Euro-Delta SOA runs                   & R2015  \\
+%QUERY        & Bug-fix for ammonium deposition & \\
+       & Revised boundary condition treatments % & \\  % Vertical profiles
+       ; ISORROPIA capability added & \\
+       &                                                &\\
+rv4.5   & Sixth open-source (Sep 2014)                   & R2014\\
+       & Improved dust, sea-salt, SOA modelling          % &      \\
+       ; AOD and extinction coefficient calculations  updated %& \\
+       ; Data assimilation system added % & \\
+       ; Hybrid vertical coordinates replace earlier sigma % & \\
+       ; Flexibility of grid projection increased. & \\
+%SKIP        & ?? Point sources, plume rise, data-assimilation\\
+       &                                                &\\
+rv4.4   & Fifth open-source (Sep 2013) %
+       ; Improved dust and sea-salt modelling   %          &      \\
+       ; AOD and extinction coefficient calculations added %  &\\
+       ; gfortran compatibility improved            %      &      \\
+                  & R2014, R2013\\
+       &                                                &\\
+rv4.3   & Fourth public domain (Mar. 2013)  %
+       ; Initial use of namelists           %            & \\
+       ; Smoothing of MARS results         %            & \\
+       ; Emergency module for volcanic ash and other events% & \\
+       ; Dust and road-dust options added as defaults % & \\
+       ; Advection algorithm changed  % & \\ % \citet{CLAPP98}    & \\
+             & R2013\\ 
+        &                                                &\\
+rv4.0   & Third public domain (Sep. 2012)                & R2013\\ 
+        & As documented in \citet{Simpson_et_al:EMEP}    & \\
+%v2011-06& Second public domain (Aug. 2011)                &\\ 
+%rv3     & First public domain (Sep. 2008)                &\\ 
+        &                                                &\\
+\hline
+\end{tabular}
+Notes: (a) R2018 refers to EMEP Status report 1/2018, etc.
+\end{footnotesize}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\bibliographystyle{copernicus}         % change bibliography-name after each
+\renewcommand\bibname{References}      % bibliographystyle command!
+\addcontentsline{toc}{section}{References}
+\bibliography{Refs,EMEP_Reports}
+%\bibliography{myRefs,EMEP_Reports}

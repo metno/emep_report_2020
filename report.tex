@@ -1,0 +1,374 @@
+% Remove the /draft command in front of /begin{document} for final print!!!!
+% and set the draft to false later on
+% Ubuntu Precise related changes suggested by Heiko 06/21/2013
+% --------------------------------------
+%\documentclass[a4paper,12pt,american,draft]{book}
+\documentclass[a4paper,12pt,american,final]{book}
+\special{papersize=210mm,297mm}
+\usepackage{a4}
+\usepackage[pdftex]{geometry}
+% --------------------------------------
+\usepackage{advdate}%\SetDate[07/08/2017] % Set date in \today
+
+\usepackage{tabularx,longtoc,booktabs,multirow}
+\usepackage{textcomp}
+%\usepackage[latin9]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}              % Fonts with real
+\usepackage{subscript}
+\usepackage{color}
+\usepackage{babel}% other languages/letters
+\usepackage{afterpage}
+%\usepackage{varioref}                 % pages in refs
+\usepackage{graphics}                  % \usepackage[dvips]{graphics} for latex+dvips+ps2pdf
+%\usepackage{graphicx}                 % \usepackage[dvips]{graphicx} for latex+dvips+ps2pdf
+\usepackage{epsfig}                    % Enhanced PostScript (needed for SR tables!!!)
+\usepackage{float}                     % exact positioning of floats ([H])
+%\usepackage{floatfig}
+\usepackage{wrapfig}
+\usepackage{subfigure}                 % several pics, one title
+%FAILED \usepackage{subcaption}                % DS supercedes subfigure. Used in Condensables
+%\usepackage{rotating}
+\usepackage{array}                     % length \extrarowhheight fuer Tabellen
+%\usepackage{supertabular}             % long tabels, pagewise
+\usepackage{longtable}                 % long table, complete
+\usepackage{threeparttable}
+\usepackage[normalem]{ulem}            % sout.. needed by \DEL
+%\usepackage{dcolumn}                  % table-values oriented to .
+%\newcolumntype{d}[1]{D{.}{.}{#1}}
+\usepackage{amsmath}
+\usepackage{ifthen}                   % \ifthenelse command
+\usepackage{xspace}                   % adds space only when needed
+\usepackage[version=3]{mhchem}        % chemical molecular formulae, e.g. \ce{H2O}
+%\usepackage{fancyhdrs}               % old version of fancyheadings
+\usepackage{fancyhdr}                 %  Works with texlive
+%DAVE \usepackage{fancyheadings}                  % special header
+%\usepackage{portland}
+%ds2004 \bibliographystyle{jacbib}
+\usepackage[sectionbib]{natbib}
+\bibpunct{(}{)}{,}{a}{}{,}   %For Patrick Daly's natbib package. In preamble
+\usepackage{chapterbib}                % Bib after each chapter
+%\usepackage{bibunits}                 % Bib after each chapter
+\bibliographystyle{copernicus}         % change bibliography-name after each
+\renewcommand\bibname{References}      % bibliographystyle command!
+
+%Added by Dave:
+%\usepackage[hyphens]{url}              % fro web-addresses
+\usepackage[hyphens]{xurl} 
+\usepackage{hyperref}                  % clickable cross-references and hyperlinks
+\hypersetup{colorlinks=false,pdfborder={0 0 0},} % Remove ugly borders around hyperlinks
+\usepackage[hyphenbreaks]{breakurl}
+\usepackage[Sonny]{fncychap}
+\usepackage{psfrag}
+%\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Bjarne]{fncychap}
+%added by Dave, 2005:
+\usepackage{ccaption}
+%added by Dave, 2006:
+\usepackage{lscape}
+%HM 2010
+\usepackage[font=small]{caption}      % sets caption font and stile
+\usepackage{doi}
+\usepackage{tcolorbox}
+%added by michaelS
+\usepackage[percent]{overpic}
+\usepackage{enumitem}
+
+%Added by Agnes 09 July 2010
+%Bigger text area on pages
+%Page size redefined
+\setlength{\textwidth}{15.7cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{-1cm}
+\setlength{\evensidemargin}{-5pt}
+
+%
+% Place for rule under heading
+%
+\addtolength{\headheight}{3pt}
+\addtolength{\headsep}{-3pt}
+%%%
+%\newcommand{\Dave}[1]{{\color{red}{#1}}}
+
+\newcommand{\DraftNote}[2]{\ifthenelse{\boolean{draftactive}}{\textcolor{#1}{#2}}{}}
+\newcommand{\NEW}[1]{\DraftNote{red}{#1}}
+\newcommand{\DEL}[1]{\DraftNote{green}{\sout{#1}}}
+\newcommand{\QUERY}[1]{\DraftNote{magenta}{#1}}
+\newcommand{\DAVE}[1]{\DraftNote{blue}{#1}}
+\newcommand{\COMMENT}[1]{\DraftNote{cyan}{#1}}
+\newcommand{\SKIP}[1]{}
+\newcommand{\old}[1]{\DraftNote{gray}{#1}}
+%%% From Wenche:
+\newcommand{\AAEff}{AAE$_\mathrm{ff}$\xspace}
+\newcommand{\AAEbb}{AAE$_\mathrm{bb}$\xspace}
+
+%
+% CHANGE THIS TO YOUR NEEDS !!!
+%
+\lhead[\fancyplain{}{\bfseries\thepage}]%
+      {\fancyplain{}{\bfseries \leftmark}}
+\rhead[\fancyplain{}{\bfseries EMEP REPORT 1/2020}]%
+      {\fancyplain{}{\bfseries\thepage}}
+\cfoot{}
+
+% empty pages
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\newcommand{\createemptydoublepage}{\clearpage\rule{0cm}{1cm}\clearemptydoublepage}
+% This will force starting on an even/left-side page, includes an empty page
+% if necessary. Could be useful when we have tables that go over two
+% pages, e.g. SR tables and long emission trends.
+\newcommand{\cleartoleftpage}{\clearpage\ifodd\value{page}\hbox{}\newpage\fi}
+
+% float behaviour
+\renewcommand\floatpagefraction{.85}
+\renewcommand\topfraction{.93}
+\renewcommand\bottomfraction{.93}
+\renewcommand\textfraction{.07}
+
+% Official name of the model
+\newcommand{\Unimod}{EMEP {MSC-W}\xspace}
+
+% some useful commands
+\newcommand{\nox}{\ce{NO_x}\xspace}         %{\ensuremath{\mbox{NO}_{\rm x}}}
+\newcommand{\noii}{\ce{NO2}\xspace}         %{\ensuremath{\mbox{NO}_{\rm 2}}}
+\newcommand{\nhiii}{\ce{NH3}\xspace}        %{\ensuremath{\mbox{NH}_{\rm 3}}}
+\newcommand{\ii}{\ce{_2}\xspace}            %{\ensuremath{_{\rm 2}}}
+\newcommand{\no}{\ce{NO}\xspace}            %{\ensuremath{NO}}
+\newcommand{\OO}{\ce{O2}\xspace}            %{\ensuremath{O_{\rm 2}}}
+\newcommand{\pan}{\ce{CH3COO2NO2}\xspace}   %{\ensuremath{\mbox{CH}_{\rm 3}\mbox{COO}_{\rm 2}\mbox{NO}_{\rm 2}}}
+\newcommand{\ppn}{\ce{C2H5COO2NO2}\xspace}  %{\ensuremath{\mbox{C}_{\rm 2}\mbox{H}_{\rm 5}\mbox{COO}_{\rm 2}\mbox{NO}_{\rm 2}}}
+\newcommand{\methanol}{\ce{CH3OH}\xspace}   %{\ensuremath{CH_{\rm 3}OH}}
+\newcommand{\ethanol}{\ce{C2H5OH}\xspace}   %{\ensuremath{C_{\rm 2}H_{\rm 5}OH}}
+\newcommand{\acetal}{\ce{CH3CHO}\xspace}    %{\ensuremath{CH_{\rm 3}CHO}}
+\newcommand{\mek}{\ce{CH3COC2H5}\xspace}    %{\ensuremath{CH_{\rm 3}COC_{\rm 2}H_{\rm 5}}}
+\newcommand{\sulacid}{\ce{H2SO4}\xspace}
+\newcommand{\PM}[1][]{\ifthenelse{\equal{#1}{}}{\ce{PM}}{\ce{PM_{#1}}}\xspace}
+\newcommand{\soii}{\ce{SO2}\xspace}
+\newcommand{\soiii}{\ce{SO3}\xspace}
+\newcommand{\soiv}{\ce{SO4^{2-}}\xspace}
+\newcommand{\sox}{\ce{SO_x}\xspace}
+\newcommand{\oiii}{\ce{O3}\xspace}
+\newcommand{\coii}{\ce{CO2}\xspace}
+\newcommand{\chiv}{\ce{CH4}\xspace}
+\newcommand{\niio}{\ce{N2O}\xspace}
+\newcommand{\nhiv}{\ce{NH4}\xspace}
+\newcommand{\noiii}{\ce{NO3-}\xspace}
+
+%
+% Some new AOT40 defs:
+\newcommand{\aotobs}{\ensuremath{\mbox{AOT40}^{\mbox{\footnotesize 3m} }}}
+\newcommand{\aotfobs}{\ensuremath{\mbox{AOT40}_f^{\mbox{\footnotesize 3m} }}}
+\newcommand{\aotucf}{\ensuremath{\mbox{AOT40}_f^{\mbox{\footnotesize uc} }}}
+\newcommand{\aotucc}{\ensuremath{\mbox{AOT40}_c^{\mbox{\footnotesize uc} }}}
+
+% for Condensables:
+\newcommand{\SVOCc}{\ensuremath{\mbox{SVOC}_{\footnotesize{\mbox{(pm)}}}}\xspace}
+\newcommand{\SVOCg}{\ensuremath{\mbox{SVOC}_{\footnotesize{\mbox{(g)}}}}\xspace}
+\newcommand{\SVOCgn}{\ensuremath{\mbox{SVOC}_{\footnotesize{\mbox{(g,n)}}}}\xspace}
+\newcommand{\SVOCgnm}{\ensuremath{\mbox{SVOC}_{\footnotesize{\mbox{(g,n-1)}}}}\xspace}
+
+
+
+%%%%%%%%%%%%%%%% For EBC chapter 
+
+%DS xspace doesn't work after math, so changed to simpler text
+%\newcommand{\EBCff}{\ensuremath{\mbox{EBC}_{\mathit{ff}}\xspace}}
+%Also ok:
+%\newcommand{\EBCff}{\chem{EBC_\mathit{ff}}\xspace}
+%\newcommand{\EBCbb}{\chem{EBC_\mathit{bb}}\xspace}
+%\newcommand{\ECff}{\chem{EC_\mathit{ff}}\xspace}
+%\newcommand{\ECbb}{\chem{EC_\mathit{bb}}\xspace}
+% Better?
+\newcommand{\EBCff}{EBC$_\mathrm{ff}$\xspace}
+\newcommand{\EBCbb}{EBC$_\mathrm{bb}$\xspace}
+\newcommand{\ECff}{EC$_\mathrm{ff}$\xspace}
+\newcommand{\ECbb}{EC$_\mathrm{bb}$\xspace}
+%%%%%%%%%%%%%%%%% NEW FOR chaperFST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Fst}{\ensuremath{F_{st}}}
+\newcommand{\FstY}{\ensuremath{F_{st}Y}}
+\newcommand{\AFstz}{\ensuremath{AF_{st}0}}
+\newcommand{\AFstY}{\ensuremath{AF_{st}Y}}
+\newcommand{\AFstf}{\ensuremath{AF_{st}0}}
+\newcommand{\AFstYf}{\ensuremath{AF_{st}1.6}}
+\newcommand{\AFSTDF}{\ensuremath{AF_{st}1.6_{ gen}}}
+\newcommand{\AFSTCR}{\ensuremath{AF_{st}3_{ gen}}}
+\newcommand{\AFstc}{\ensuremath{AF_{st}0}}
+\newcommand{\AFstYc}{\ensuremath{AF_{st}6}}
+
+\newcommand{\AOTgf}{AOT40$_f^{G}$}
+\newcommand{\AOTf}{AOT40$_f$}
+\newcommand{\AOTgc}{AOT40$_c^{G}$}
+\newcommand{\AOTc}{AOT40$_c$}
+%
+\newcommand{\POD}[1]{POD$_{#1}$\xspace}  %ds, use as e.g. \POD{6}
+
+\newcommand{\Rcl}{\ensuremath{R_{CL}}}
+
+\newcommand{\nmole}{nmol m$^{-2}$ s$^{-1}$}  % for Fst
+\newcommand{\mmole}{mmol m$^{-2}$\xspace}  % For CL
+\newcommand{\dose}{DO$_3$SE}
+\newcommand{\gmax}{\ensuremath{g_{max}}}
+\newcommand{\gsto}{\ensuremath{g_{sto}}\xspace}
+%\newcommand{\gmax}{$g_\mbox{max}$}
+\newcommand{\fphen}{f$_{\mbox{phen}}$}
+\newcommand{\fphena}{f$_{\mbox{phen\_a}}$}
+\newcommand{\fphenb}{f$_{\mbox{phen\_b}}$}
+\newcommand{\fphenc}{f$_{\mbox{phen\_c}}$}
+\newcommand{\fphend}{f$_{\mbox{phen\_d}}$}
+\newcommand{\fphene}{f$_{\mbox{phen\_e}}$}
+\newcommand{\fphenf}{f$_{\mbox{phen\_f}}$}
+\newcommand{\Astart}{A$_{\mbox{start}}$}
+\newcommand{\Aend}{A$_{\mbox{end}}$}
+\newcommand{\fmin}{f$_{\mbox{min}}$}
+\newcommand{\fSWP}{f$_{\mbox{SWP}}$}
+\newcommand{\Tmin}{$T_{\mbox{min}}$}
+\newcommand{\Topt}{$T_{\mbox{opt}}$}
+\newcommand{\Tmax}{$T_{\mbox{max}}$}
+\newcommand{\FLUX}{FLUX_FIGS}
+\newcommand{\OZONEMAPS}{MAPS_O3}
+\newcommand{\OZONE}{FIGS_O3}
+
+
+
+%%%%%%%%%%%%%%%%% NEW FOR FST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some common units:
+
+\newcommand{\sqkm}{km$^2$\,}
+\newcommand{\cmprs}{cm$^{-1}$\,}
+\newcommand{\degrees}{\ensuremath{^\circ}}
+\newcommand{\ugXmc}[1]{\ce{$\mu$g({#1})~m$^{-3}$}}
+\newcommand{\ugXmq}[1]{\ce{$\mu$g({#1})~m$^{-2}$}}
+\newcommand{\ugXlt}[1]{\ce{$\mu$g({#1})~l$^{-1}$}}
+\newcommand{\ug}{\ensuremath{\mu \mbox{g m}^{-3}}\,}
+\newcommand{\ugN}{\ensuremath{\mu \mbox{g(N) m}^{-3}}}   % ds
+\newcommand{\umol}{\ensuremath{\mu \mbox{mole}}}
+\newcommand{\prsqcm}{cm$^{-2}$\,}
+\newcommand{\ugS}{\ensuremath{\mu \mbox{g(S) m}^{-3}}}   % ds
+\newcommand{\ugC}{\ensuremath{\mu \mbox{g(C) m}^{-3}}}   % st
+\newcommand{\ugSl}{\ensuremath{\mu \mbox{g(S)l}^{-1}}}   % hf
+\newcommand{\ugNl}{\ensuremath{\mu \mbox{g(N)l}^{-1}}}   % hf
+\newcommand{\ugSm}{\ensuremath{\mu \mbox{g(S)m}^{-2}}}   % hf
+\newcommand{\ugNm}{\ensuremath{\mu \mbox{g(N)m}^{-2}}}   % hf
+\newcommand{\mgSl}{\ensuremath{\mbox{mg(S)l}^{-1}}}   % hf
+\newcommand{\mgNl}{\ensuremath{\mbox{mg(N)l}^{-1}}}   % hf
+\newcommand{\mgSm}{\ensuremath{\mbox{mg(S)m}^{-2}}}   % hf
+\newcommand{\mgNm}{\ensuremath{\mbox{mg(N)m}^{-2}}}   % hf
+\newcommand{\Wm}{\ensuremath{\mbox{W\,m}^{-2}}\xspace}
+\newcommand{\um}{\ensuremath{\mu \mbox{m}}}
+\input{fake_acp}
+
+% Dave Aug 2015:
+\providecommand{\pmfine}{PM$_{2.5}$\xspace}         %{\ensuremath{\mbox{NO}_{\rm x}}}
+\providecommand{\pmten}{PM$_{10}$\xspace}         %{\ensuremath{\mbox{NO}_{\rm x}}}
+\providecommand{\pmone}{PM$_{1}$\xspace}  
+\providecommand{\gamman}{\ensuremath{\gamma_{\footnotesize{\ce{N2O5}}}}}
+\providecommand{\Coa}{\ensuremath{C_{\footnotesize{OA}}}\xspace}
+\providecommand{\Ci}{\ensuremath{C^{*}_{\footnotesize{i}}}\xspace}
+\providecommand{\ug}{\ensuremath{\mu \mbox{g m}^{-3}}\,}
+\providecommand{\ugC}{\ensuremath{\mu \mbox{g(C) m}^{-3}}\,}
+\providecommand{\degC}{\ensuremath{^\circ \mbox{C}}}
+%
+\providecommand{\xe}[1]{\ensuremath{\times 10^{#1}}}  % x 10^x
+\providecommand{\ee}[1]{\ensuremath{10^{#1}}}         %  Just 10^x
+%%%%%%%%%%%%%%%%%%%%%%%%%% End Dave Aug 2015
+
+%%%% HF June 2018
+\newcommand{\resZO}{\ensuremath{0.1^{\circ} \times 0.1^{\circ}}}  %0.1x0.1
+\newcommand{\resZT}{\ensuremath{0.3^{\circ} \times 0.2^{\circ}}}  %0.3x0.2
+\newcommand{\resZF}{\ensuremath{0.4^{\circ} \times 0.3^{\circ}}}  %0.4x0.3
+%%%%%%%%%%%%%%%%%%%%%%%%%% End Hilde Aug 2018
+
+%%
+%% draft-Modus
+%%============
+%%
+% \newif\ifdraftactive \draftactivefalse
+%\newboolean{draftactive}\setboolean{draftactive}{true}
+\newboolean{draftactive}\setboolean{draftactive}{false}
+%
+% draft-Modus einschalten
+\newcommand{\draft}{
+  % load draft package
+  \usepackage[first,bottomafter]{draftcopy}
+  \draftcopyName{Draft\space\number\day .\number\month .\number\year}{90}
+  % show labels and refs
+  \usepackage{showkeys}
+  % report figure sizes
+  \epsfverbosetrue
+  % mark draft mode
+  \setboolean{draftactive}{true}%\draftactivetrue
+}
+%
+% Text, der im draft-Modus NICHT erscheint
+\newcommand{\finalonly}[1]{
+% \ifdraftactive \fbox{\sf skipped in DRAFT} \else #1 \fi
+  \ifthenelse{\boolean{draftactive}}{\fbox{\sf skipped in DRAFT}}{#1}
+}
+%
+% Messages only in draft
+\newcommand{\draftnote}[1]{
+% \ifdraftactive
+%     \fbox{\bf #1}
+%     \marginpar[\hfill\fbox{!}$\Rightarrow$]{\hfill$\Leftarrow$\fbox{!}} \fi
+  \ifthenelse{\boolean{draftactive}}{\fbox{\bf #1}
+    \marginpar[\hfill\fbox{!}$\Rightarrow$]{\hfill$\Leftarrow$\fbox{!}}}{}
+}
+
+%\draft  %% COMMENT OUT TO STOP DRAFT MODE PRINTOUTS!
+%\psfull % show figures even in draftmode
+
+%%%%%%%%%%%%%%%%% Compile ONLY selected Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%
+%\includeonly{chapterTrends}  %{chapterStatus2016}
+%\includeonly{chapterEMEPIntensive}
+%\includeonly{Titlepage}
+  
+\begin{document}
+\frontmatter
+\pagestyle{fancy}
+\include{Titlepage} %Hilde, Wenche
+\cleardoublepage
+
+\include{ExSummary} %Hilde
+\include{acknow} %Hilde, all, need reminder
+
+\tableofcontents
+\cleardoublepage
+
+\mainmatter
+\pagestyle{fancy}
+
+\include{chapterIntro}
+
+%Now updated with the chapters that should be there 20/6-18 HF
+\part{Status of air pollution}
+\include{chapterStatus2018}
+\include{chapterEmis2018} %Agnes, CEIP
+
+\part{Research Activities}
+
+
+\part{Technical EMEP Developments}
+\include{chapterEMEPModelUpdates}
+\include{chapterMeasurementDevelopments} %Wenche
+
+\part{Appendices}
+\setcounter{part}{1}
+\cleardoublepage
+\setcounter{page}{1}
+\begin{appendix}
+\renewcommand{\theHchapter}{\Alph{chapter}}
+\renewcommand{\thepage}{{\em page \Alph{chapter}:\arabic{page}}}
+\renewcommand{\thepage}{{\Alph{chapter}:\arabic{page}}}
+\renewcommand{\thetable}{\Alph{chapter}:\arabic{table}}
+
+%\include{chapterAPPX_EMIS_2018}
+%\include{chapterAPPX_EMIS_trends}
+%\include{chapterAPPX_SR2018}
+%\include{chapterAPPX_CountryRep}
+%\include{chapterAPPX_ModelEval} % NEED TO INCLUDE AIRBASE? Michael G
+
+
+\end{appendix}
+\end{document}

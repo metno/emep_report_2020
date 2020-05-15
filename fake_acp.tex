@@ -1,0 +1,27 @@
+
+%%%%%%%%%%%%%%%%%%%%% Fake ACP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modified from ACP files, Dave
+%
+% Let's chemical species and units be written within
+% need for lots of $ signs, e.g. \chem{H_2O} or  \unit{gm^{-2}}
+%Orig from ACP: \chem
+%
+% But found that mathrm looks much nicer than mathsf
+%
+%\DeclareRobustCommand*{\chem}[1]{\ensuremath{%
+%\ifx\testbx\f@series\mbox{\boldmath$\mathsf{#1}$}\else\mathsf{#1}\fi}}
+%
+%Orig from ACP: \unit
+\DeclareRobustCommand*{\unit}[1]{\def~{\,}\ensuremath{%
+\ifx\testbx\f@series\mbox{\boldmath$\mathrm{#1}$}\else\mathrm{#1}\fi}}
+
+%\chem
+\DeclareRobustCommand*{\chem}[1]{\ensuremath{%
+\ifx\testbx\f\mbox{$\mathrm{#1}$}\else\mathrm{#1}\fi}}
+
+%\unit
+\DeclareRobustCommand*{\unit}[1]{\def~{\,}\ensuremath{%
+\ifx\testbx\f\mbox{$\mathrm{#1}$}\else\mathrm{#1}\fi}}
+
+%%%%%%%%%%%%%%%%%%%%% End Fake ACP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
