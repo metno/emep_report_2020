@@ -1,9 +1,52 @@
 \chapter{GIT usage}
 
-\section{Git usage from overleaf}
+This report is usable both from the web-interface overleaf \url{https://www.overleaf.com/project/5ebea6ecfa55c300015e6073} and directly from github: \url{https://github.com/metno/emep_report_2020}
 
+\section{Report usage from overleaf}
+
+When starting, get the latest version from github
 \begin{itemize}
     \item Press Menu -> (Sync) GitHub
-    \item Select "Pull changes from github" (get all changes from other contributors)
-    \time Select "Push chan
+    \item Select "Pull changes from github" (get all changes from other contributors, not always needed)
+    \item Start making your changes
 \end{itemize}
+
+When you want to make the results available for others to see/use:
+\begin{itemize}
+    \item Press Menu -> (Sync) GitHub
+    \item Select "Pull changes from github" (get all changes from other contributors, not always needed)
+    \item Select "Push Overleaf changes to github" (github users will see all changes visible on overleaf)
+\end{itemize}
+
+
+\section{Report usage from GitHub}
+
+Download the report once:
+\begin{verbatim}
+    git clone git@github.com:metno/emep_report_2020.git
+\end{verbatim}
+All further work will be done in the directory emep\_report\_2020.
+
+To get the latest version of the report, run from within above directory:
+\begin{verbatim}
+    git pull
+\end{verbatim}
+
+To create a local version of your changes add and commit the to your local repository:
+
+\begin{verbatim}
+    git add file1.tex file2.tex
+    git commit -m 'changed a bit'
+\end{verbatim}
+
+Check regularly if you haven't forgotten to add any files to your local repository:
+\begin{verbatim}
+    git status
+\end{verbatim}
+
+Make your local repository available to everybody else. (Ensure you are working on the latest version. And if conflicts, you should fix them and prepare a new version):
+\begin{verbatim}
+    git pull # accept merging changes
+    git push
+\end{verbatim}
+
