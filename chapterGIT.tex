@@ -1,33 +1,27 @@
 \chapter{GIT usage}
 
-This report is usable both from the web-interface overleaf \url{https://www.overleaf.com/project/5ebea6ecfa55c300015e6073} and directly from github: \url{https://github.com/metno/emep_report_2020}
+This report is usable both from the web-interface overleaf \url{https://www.overleaf.com/project/5ebea6ecfa55c300015e6073} and as git repository from: \url{https://git.overleaf.com/5ebea6ecfa55c300015e6073}
 
 If you have problems accessing/writing to github or overleaf, contact \href{mailto:Heiko.Klein@met.no}{Heiko.Klein@met.no}
 
 \section{Report usage from overleaf}
 
-When starting, get the latest version from github
-\begin{itemize}
-    \item Press Menu -> (Sync) GitHub
-    \item Select "Pull changes from github" (get all changes from other contributors, not always needed)
-    \item Start making your changes
-\end{itemize}
+Login to overleaf. Make the change you want. Press Ctrl-s or 'Recompile' regularly so you don't introduce too many bugs. Your changes are regularly saved automatically.
 
-When you want to make the results available for others to see/use:
-\begin{itemize}
-    \item Press Menu -> (Sync) GitHub
-    \item Select "Pull changes from github" (get all changes from other contributors, not always needed)
-    \item Select "Push Overleaf changes to github" (github users will see all changes visible on overleaf)
-\end{itemize}
+\section{Report usage via git+overleaf}
 
+Make sure you have a password set on overleaf. If you don't know your password (e.g. because you login with google), reset the password. You should cache your credentials to avoid typing them all the time (this will cache your username/password for git in memory):
+\begin{verbatim}
+git config credential.helper 'cache'
+\end{verbatim}
 
-\section{Report usage from GitHub}
 
 Download the report once:
 \begin{verbatim}
-    git clone git@github.com:metno/emep_report_2020.git
+    git clone https://git.overleaf.com/5ebea6ecfa55c300015e6073 Report\_2020
+    # enter username/password
 \end{verbatim}
-All further work will be done in the directory emep\_report\_2020.
+All further work will be done in the directory Report\_2020. Remember that with git, you are working with at least 3 versions, a working-copy (where you make your changes), a local repository (add/status/commit) and the original repository on overleaf (pull/push).
 
 To get the latest version of the report, run from within above directory:
 \begin{verbatim}
@@ -46,9 +40,10 @@ Check regularly if you haven't forgotten to add any files to your local reposito
     git status
 \end{verbatim}
 
-Make your local repository available to everybody else. (Ensure you are working on the latest version. And if conflicts, you should fix them and prepare a new version):
+Make your local repository available to everybody else. (Ensure you are working on the latest version. And if conflicts, you should fix them and prepare a new version). Make this when nobody else is working on the report, otherwise, there will be changes all the time between pull and push.
 \begin{verbatim}
     git pull # accept merging changes
     git push
 \end{verbatim}
 
+More information on using github and overleaf can be found here: \href{https://confluence.desy.de/download/attachments/97009435/overleaf_git_howto.pdf?version=1&modificationDate=1550237113964&api=v2}.
